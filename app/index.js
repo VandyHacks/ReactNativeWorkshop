@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from "react";   // Importing components from React.
 import {
   AppRegistry,
   StyleSheet,
@@ -10,90 +10,98 @@ import {
   TextInput,
   Keyboard,
   Platform
-} from "react-native";
+} from "react-native";                      // Importing components from React Native. 
 
-const isAndroid = Platform.OS == "android";
-const viewPadding = 10;
+const isAndroid = Platform.OS == "android"; // This indicates that this code will specificially be implemented 
+                                            // on Android platforms.
+const viewPadding = 10;                     // This gives some room around the screen so that the elements 
+                                            // of the app isn't right against the border. 
 
-export default class TodoList extends Component {
-  state = {
-    tasks: [],
-    text: ""
+export default class TodoList extends Component {    // This is the main class of this app.
+  state = {                                          // A "state" is a type of data that allows change.
+    tasks: [],                                       // An array named tasks will keep track of the list.
+    text: ""                                         // A string called text will keep track of the inputted text.
   };
 
-  changeTextHandler = text => {
-    this.setState({ text: text });
+  changeTextHandler = text => {                      // This function deals with what the user has entered.
+    this.setState({ text: text });                   // setState() schedules updates to the component.
   };
 
-  addTask = () => {
-    let notEmpty = this.state.text.trim().length > 0;
-
-    if (notEmpty) {
+  addTask = () => {                                  // addTask is a function defined to add tasks. 
+    let notEmpty = this.state.text.trim().length > 0; // let is a type of variable whose value will change.
+                                   // const, used above, is a type of variable whose value will not change.
+                                                      
+    if (notEmpty) {                                  // If the user types something in,
       this.setState(
-        prevState => {
+        prevState => {                               // changes will be based on the previous state.
           let { tasks, text } = prevState;
           return {
-            tasks: tasks.concat({ key: tasks.length, text: text }),
+            tasks: tasks.concat({ key: tasks.length, text: text }), 
             text: ""
           };
         },
-        () => Tasks.save(this.state.tasks)
+        () => Tasks.save(this.state.tasks)           // This saves the current state of the array.
       );
     }
   };
 
-  deleteTask = i => {
-    this.setState(
+  deleteTask = i => {                                // deleteTask is a function defined to delete tasks. 
+    this.setState(                                   // setState() schedules updates to the component.
       prevState => {
-        let tasks = prevState.tasks.slice();
+        let tasks = prevState.tasks.slice();         
 
-        tasks.splice(i, 1);
+        tasks.splice(i, 1);                          // This removes the selected element from the array.
 
-        return { tasks: tasks };
+        return { tasks: tasks };                     // This returns what is left.
       },
-      () => Tasks.save(this.state.tasks)
+      () => Tasks.save(this.state.tasks)             // This saves the current state of the array.
     );
   };
 
-  componentDidMount() {
-    Keyboard.addListener(
-      isAndroid ? "keyboardDidShow" : "keyboardWillShow",
-      e => this.setState({ viewPadding: e.endCoordinates.height + viewPadding })
+  componentDidMount() {                                 // When you press the text box, a keyboard should appear.
+    Keyboard.addListener(                                       // This detects whether a keyboard is being used or not.
+      isAndroid ? "keyboardDidShow" : "keyboardWillShow",       // If the keyboard is in use,
+      e => this.setState({ viewMargin: e.endCoordinates.height + viewPadding }) // extra padding will be added.
     );
 
     Keyboard.addListener(
-      isAndroid ? "keyboardDidHide" : "keyboardWillHide",
-      () => this.setState({ viewPadding: viewPadding })
+      isAndroid ? "keyboardDidHide" : "keyboardWillHide",       // If the keyboard is not in use,
+      () => this.setState({ viewMargin: viewPadding })          // the padding will be normal.
     );
 
-    Tasks.all(tasks => this.setState({ tasks: tasks || [] }));
+    Tasks.all(tasks => this.setState({ tasks: tasks || [] }));  // This saves all of the tasks.
   }
 
-  render() {
+  render() {                                          // render() loads the code to the platform.
     return (
-      <View
-        style={[styles.container, { paddingBottom: this.state.viewPadding }]}
+      <View                                           // This builds a Containter View
+        style={[styles.container, { paddingBottom: this.state.viewMargin }]} // Anything in this object will overside
+                                                // the styles.container; as in, the order matters here, unlike CSS.
       >
-        <FlatList
+        <FlatList                                     // This makes our tasks list in a simple flat layout.
           style={styles.list}
-          data={this.state.tasks}
+          data={this.state.tasks}                     // This is our array of the tasks.
           renderItem={({ item, index }) =>
-            <View>
-              <View style={styles.listItemCont}>
-                <Text style={styles.listItem}>
+            <View                                     // This container specifies how to render each item.
+            >                                    
+              <View style={styles.listItemCont}       // Each style being assigned are specified at the end of this file.
+              >
+                <Text style={styles.listItem}>        
                   {item.text}
                 </Text>
-                <Button title="X" onPress={() => this.deleteTask(index)} />
+                <Button title="X" onPress={() => this.deleteTask(index)} // This creates the [x] button that 
+                                                                         // triggers the deletion of a task.
+                />
               </View>
               <View style={styles.hr} />
             </View>}
         />
-        <TextInput
+        <TextInput                                  // This part gets the user's input to add tasks.
           style={styles.textInput}
-          onChangeText={this.changeTextHandler}
-          onSubmitEditing={this.addTask}
+          onChangeText={this.changeTextHandler}     // When the text changes, call changeTextHandler().
+          onSubmitEditing={this.addTask}            // When submitting a text change, call addTask().
           value={this.state.text}
-          placeholder="Add Tasks"
+          placeholder="Add Tasks"                   // The placeholder.
           returnKeyType="done"
           returnKeyLabel="done"
         />
@@ -103,29 +111,29 @@ export default class TodoList extends Component {
 }
 
 let Tasks = {
-  convertToArrayOfObject(tasks, callback) {
+  convertToArrayOfObject(tasks, callback) {        // This method converts the tasks to an array of objects.
     return callback(
       tasks ? tasks.split("||").map((task, i) => ({ key: i, text: task })) : []
     );
   },
-  convertToStringWithSeparators(tasks) {
+  convertToStringWithSeparators(tasks) {           // This method converts the tasks to a string with separators.
     return tasks.map(task => task.text).join("||");
   },
-  all(callback) {
-    return AsyncStorage.getItem("TASKS", (err, tasks) =>
+  all(callback) {                            // AsynStorage is a key-value storage system that is global to the app.
+    return AsyncStorage.getItem("TASKS", (err, tasks) =>                              // getItem() fetches the data.
       this.convertToArrayOfObject(tasks, callback)
     );
   },
   save(tasks) {
-    AsyncStorage.setItem("TASKS", this.convertToStringWithSeparators(tasks));
-  }
+    AsyncStorage.setItem("TASKS", this.convertToStringWithSeparators(tasks));         // setItem() stores the data.
+  }                
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+const styles = StyleSheet.create({                  // Similar to CSS: StyleSheet dictates colors, layout, and fonts etc. 
+  container: {                                      // Each of the elements on the app are labeled with an id, and 
+    flex: 1,                                        // the styling components (such as the width, padding, etc.) will
+    justifyContent: "center",                       // be applied to all elements with that id. 
+    alignItems: "center", 
     backgroundColor: "#F5FCFF",
     padding: viewPadding,
     paddingTop: 20
@@ -133,10 +141,10 @@ const styles = StyleSheet.create({
   list: {
     width: "100%"
   },
-  listItem: {
-    paddingTop: 2,
-    paddingBottom: 2,
-    fontSize: 18
+  listItem: {                                       // So, as an example, every listItem will have:
+    paddingTop: 2,                                  // a padding of 2 on top, 
+    paddingBottom: 2,                               // a padding of 2 on bottom, and
+    fontSize: 18                                    // a font size of 18.
   },
   hr: {
     height: 1,
@@ -157,4 +165,5 @@ const styles = StyleSheet.create({
   }
 });
 
-AppRegistry.registerComponent("TodoList", () => TodoList);
+AppRegistry.registerComponent("TodoList", () => TodoList); // AppRegistry is the JavaScript entry point to 
+                                                           // run React Native apps. 
