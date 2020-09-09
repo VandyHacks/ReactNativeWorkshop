@@ -15,6 +15,8 @@ Three Components:
 1.  JavaScript Thread
 2.  Background Thread
 3.  Native Thread
+
+
 Connected via Bridge.
 
 ## Why Open Source, Cross Platform Frameworks?
