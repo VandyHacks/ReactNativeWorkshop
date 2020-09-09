@@ -11,6 +11,10 @@ An introduction to open source frameworks to build cross platform native applica
 
 ## **Core Architecture Of React Native**
 
+<p align="center">
+	<img src = "res/img.png"/>
+</p>
+
 Three Components:
 1.  JavaScript Thread
 2.  Background Thread
