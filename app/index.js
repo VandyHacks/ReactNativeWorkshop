@@ -28,8 +28,8 @@ export default class TodoList extends Component {    // This is the main class o
   };
 
   addTask = () => {                                  // addTask is a function defined to add tasks. 
-    let notEmpty = this.state.text.trim().length > 0; // let is a type of variable whose value will change.
-                                   // const, used above, is a type of variable whose value will not change.
+    let notEmpty = this.state.text.trim().length > 0; // 'let' lets us know that notEmpty is a variable that can change.
+                                   // 'const,' used above, lets us know that the value of viewPadding will not change.
                                                       
     if (notEmpty) {                                  // If the user types something in,
       this.setState(
@@ -57,15 +57,16 @@ export default class TodoList extends Component {    // This is the main class o
       () => Tasks.save(this.state.tasks)             // This saves the current state of the array.
     );
   };
-
+                                                        // componentDidMount handles the event where the component mounts.
+                                                        // If this component did mount, then execute the code within it.
   componentDidMount() {                                 // When you press the text box, a keyboard should appear.
     Keyboard.addListener(                                       // This detects whether a keyboard is being used or not.
-      isAndroid ? "keyboardDidShow" : "keyboardWillShow",       // If the keyboard is in use,
+      isAndroid ? "keyboardDidShow" : "keyboardWillShow",       // If isAndroid is true, then the keyboard will show, and
       e => this.setState({ viewMargin: e.endCoordinates.height + viewPadding }) // extra padding will be added.
     );
 
     Keyboard.addListener(
-      isAndroid ? "keyboardDidHide" : "keyboardWillHide",       // If the keyboard is not in use,
+      isAndroid ? "keyboardDidHide" : "keyboardWillHide",       // If isAndroid is false, then the keyboard will hide, and
       () => this.setState({ viewMargin: viewPadding })          // the padding will be normal.
     );
 
@@ -75,8 +76,8 @@ export default class TodoList extends Component {    // This is the main class o
   render() {                                          // render() loads the code to the platform.
     return (
       <View                                           // This builds a Containter View
-        style={[styles.container, { paddingBottom: this.state.viewMargin }]} // Anything in this object will overside
-                                                // the styles.container; as in, the order matters here, unlike CSS.
+        style={[styles.container, { paddingBottom: this.state.viewMargin }]} // Anything in this object will override
+                                                                             // the styles.container.
       >
         <FlatList                                     // This makes our tasks list in a simple flat layout.
           style={styles.list}
@@ -84,7 +85,7 @@ export default class TodoList extends Component {    // This is the main class o
           renderItem={({ item, index }) =>
             <View                                     // This container specifies how to render each item.
             >                                    
-              <View style={styles.listItemCont}       // Each style being assigned are specified at the end of this file.
+              <View style={styles.listItemCont}
               >
                 <Text style={styles.listItem}>        
                   {item.text}
@@ -134,8 +135,8 @@ const styles = StyleSheet.create({                  // Similar to CSS: StyleShee
     flex: 1,                                        // the styling components (such as the width, padding, etc.) will
     justifyContent: "center",                       // be applied to all elements with that id. 
     alignItems: "center", 
-    backgroundColor: "#F5FCFF",
-    padding: viewPadding,
+    backgroundColor: "#F5FCFF",                     // Write code as you would in CSS, with a few syntax changes like
+    padding: viewPadding,                           // camelCasing and quotations.
     paddingTop: 20
   },
   list: {
